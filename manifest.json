@@ -1,10 +1,11 @@
 {
   "name": "YouTube Stats",
   "version": "1.0",
+  "author": "Nils Osswald",
   "manifest_version": 3,
   "content_scripts": [
     {
-      "matches": ["*://*.youtube.com/*"],
+      "matches": ["*://*.youtube.com/watch*"],
       "js": ["dist/main.js"],
       "run_at": "document_end"
     }

@@ -33420,6 +33420,8 @@ const Container = () => {
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
         setStats(undefined);
         const videoId = parseVideoId(location);
+        if (videoId === false)
+            return;
         const options = {
             method: 'GET',
             headers: {

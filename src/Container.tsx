@@ -40,6 +40,9 @@ const Container: React.FC = () => {
     setStats(undefined);
 
     const videoId = parseVideoId(location);
+
+    if (videoId === false) return;
+
     const options = {
       method: 'GET',
       headers: {
