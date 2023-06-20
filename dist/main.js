@@ -33386,9 +33386,89 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 
 const Container = () => {
-    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null, "Test"));
+    const [stats, setStats] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+        name: 'Loading..',
+        subscribers: -1,
+        joined: 'Loading..',
+        description: 'Loading..',
+        country: 'Loading..',
+        videos: -1,
+        views: -1,
+        iconUrl: '',
+    });
+    const containerStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '8px',
+        marginBottom: '10px',
+        backgroundColor: '#2a2929',
+        borderRadius: '12px',
+        color: 'white',
+        fontSize: '16px',
+        gap: '4px',
+    };
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+        const videoId = document.querySelector('meta[itemprop="identifier"]').getAttribute('content');
+        const options = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': 'b1f3fb19b6msh19abaea135193e1p132b6djsn092aa02cc216',
+                'X-RapidAPI-Host': 'youtube138.p.rapidapi.com'
+            }
+        };
+        const fetchStats = () => __awaiter(void 0, void 0, void 0, function* () {
+            const videoResponse = yield fetch(`https://youtube138.p.rapidapi.com/video/details/?id=${videoId}`, options);
+            const videoData = yield videoResponse.json();
+            const channelId = videoData.author.channelId;
+            const channelResponse = yield fetch(`https://youtube138.p.rapidapi.com/channel/details/?id=${channelId}`, options);
+            const channelData = yield channelResponse.json();
+            setStats({
+                name: channelData.title,
+                subscribers: channelData.stats.subscribers,
+                joined: channelData.joinedDateText,
+                description: channelData.description,
+                country: channelData.country,
+                videos: channelData.stats.videos,
+                views: channelData.stats.views,
+                iconUrl: channelData.avatar[0].url
+            });
+        });
+        fetchStats();
+    }, [window.location]);
+    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { style: containerStyle },
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+            "Channel: ",
+            stats.name),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+            "Subscribers: ",
+            stats.subscribers),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+            "Joined: ",
+            stats.joined),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+            "Description: ",
+            stats.description),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+            "Country: ",
+            stats.country),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+            "Videos: ",
+            stats.videos),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
+            "Views: ",
+            stats.views),
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", { height: 64, width: 64, src: stats.iconUrl, alt: 'Avatar' })));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Container);
 
