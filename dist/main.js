@@ -33386,6 +33386,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _useLocation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./useLocation */ "./src/useLocation.ts");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -33396,17 +33397,15 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
     });
 };
 
+
+const parseVideoId = (url) => {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length == 11) ? match[7] : false;
+};
 const Container = () => {
-    const [stats, setStats] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
-        name: 'Loading..',
-        subscribers: -1,
-        joined: 'Loading..',
-        description: 'Loading..',
-        country: 'Loading..',
-        videos: -1,
-        views: -1,
-        iconUrl: '',
-    });
+    const location = (0,_useLocation__WEBPACK_IMPORTED_MODULE_1__["default"])();
+    const [stats, setStats] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(undefined);
     const containerStyle = {
         display: 'flex',
         flexDirection: 'column',
@@ -33419,11 +33418,12 @@ const Container = () => {
         gap: '4px',
     };
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-        const videoId = document.querySelector('meta[itemprop="identifier"]').getAttribute('content');
+        setStats(undefined);
+        const videoId = parseVideoId(location);
         const options = {
             method: 'GET',
             headers: {
-                'X-RapidAPI-Key': 'b1f3fb19b6msh19abaea135193e1p132b6djsn092aa02cc216',
+                'X-RapidAPI-Key': process.env.API_KEY,
                 'X-RapidAPI-Host': 'youtube138.p.rapidapi.com'
             }
         };
@@ -33445,32 +33445,70 @@ const Container = () => {
             });
         });
         fetchStats();
-    }, [window.location]);
-    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { style: containerStyle },
+    }, [location]);
+    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { style: containerStyle }, stats ? (react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null,
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-            "Channel: ",
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("b", null, "Channel:"),
+            " ",
             stats.name),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-            "Subscribers: ",
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("b", null, "Subscribers:"),
+            " ",
             stats.subscribers),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-            "Joined: ",
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("b", null, "Joined:"),
+            " ",
             stats.joined),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-            "Description: ",
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("b", null, "Description:"),
+            " ",
             stats.description),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-            "Country: ",
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("b", null, "Country:"),
+            " ",
             stats.country),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-            "Videos: ",
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("b", null, "Videos:"),
+            " ",
             stats.videos),
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null,
-            "Views: ",
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("b", null, "Views:"),
+            " ",
             stats.views),
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", { height: 64, width: 64, src: stats.iconUrl, alt: 'Avatar' })));
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", { height: 64, width: 64, src: stats.iconUrl, alt: 'Avatar' }))) : (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, "Loading..."))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Container);
+
+
+/***/ }),
+
+/***/ "./src/useLocation.ts":
+/*!****************************!*\
+  !*** ./src/useLocation.ts ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+const useLocation = () => {
+    const [location, setLocation] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(window.location.href);
+    const onChange = () => {
+        setLocation(window.location.href);
+    };
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+        window.addEventListener('yt-navigate-finish', onChange);
+        return () => {
+            window.removeEventListener('yt-navigate-finish', onChange);
+        };
+    }, []);
+    return location;
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (useLocation);
 
 
 /***/ })

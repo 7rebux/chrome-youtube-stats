@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useLocation from './useLocation';
 
 type ChannelStats = {
   name: string;
@@ -11,19 +12,17 @@ type ChannelStats = {
   iconUrl: string;
 };
 
+const parseVideoId = (url: string) => {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+  const match = url.match(regExp);
+
+  return (match && match[7].length == 11) ? match[7] : false;
+}
+
 const Container: React.FC = () => {
-  const [stats, setStats] = useState<ChannelStats>(
-    {
-      name: 'Loading..',
-      subscribers: -1,
-      joined: 'Loading..',
-      description: 'Loading..',
-      country: 'Loading..',
-      videos: -1,
-      views: -1,
-      iconUrl: '',
-    }
-  );
+  const location = useLocation();
+
+  const [stats, setStats] = useState<ChannelStats | undefined>(undefined);
 
   const containerStyle: React.CSSProperties = {
     display: 'flex', 
@@ -38,7 +37,9 @@ const Container: React.FC = () => {
   }
 
   useEffect(() => {
-    const videoId = document.querySelector('meta[itemprop="identifier"]').getAttribute('content');
+    setStats(undefined);
+
+    const videoId = parseVideoId(location);
     const options = {
       method: 'GET',
       headers: {
@@ -69,18 +70,24 @@ const Container: React.FC = () => {
     };
 
     fetchStats();
-  }, [window.location]);
+  }, [location]);
 
   return (
     <div style={containerStyle}>
-      <span>Channel: {stats.name}</span>
-      <span>Subscribers: {stats.subscribers}</span>
-      <span>Joined: {stats.joined}</span>
-      <span>Description: {stats.description}</span>
-      <span>Country: {stats.country}</span>
-      <span>Videos: {stats.videos}</span>
-      <span>Views: {stats.views}</span>
-      <img height={64} width={64} src={stats.iconUrl} alt='Avatar' />
+      {stats ? (
+        <>
+          <span><b>Channel:</b> {stats.name}</span>
+          <span><b>Subscribers:</b> {stats.subscribers}</span>
+          <span><b>Joined:</b> {stats.joined}</span>
+          <span><b>Description:</b> {stats.description}</span>
+          <span><b>Country:</b> {stats.country}</span>
+          <span><b>Videos:</b> {stats.videos}</span>
+          <span><b>Views:</b> {stats.views}</span>
+          <img height={64} width={64} src={stats.iconUrl} alt='Avatar' />
+        </>
+      ) : (
+        <span>Loading...</span>
+      )}
     </div>
   );
 };
