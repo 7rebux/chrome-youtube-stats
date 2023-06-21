@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useLocation from './useLocation';
+import { EyeIcon, ProfileIcon, VideoIcon } from './icons';
 
 type ChannelStats = {
   name: string;
@@ -10,6 +11,7 @@ type ChannelStats = {
   videos: number;
   views: number;
   iconUrl: string;
+  url: string;
 };
 
 const parseVideoId = (url: string) => {
@@ -27,14 +29,19 @@ const Container: React.FC = () => {
   const containerStyle: React.CSSProperties = {
     display: 'flex', 
     flexDirection: 'column',
-    padding: '8px',
+    padding: '12px',
     marginBottom: '10px',
-    backgroundColor: '#2a2929',
+    backgroundColor: 'rgba(52, 52, 52, 0.3)',
     borderRadius: '12px',
     color: 'white',
     fontSize: '16px',
     gap: '4px',
-  }
+  };
+  const wrapperStyle: React.CSSProperties = {
+    display: 'inline-flex', 
+    alignItems: 'center', 
+    gap: '4px',
+  };
 
   useEffect(() => {
     setStats(undefined);
@@ -68,7 +75,8 @@ const Container: React.FC = () => {
         country: channelData.country,
         videos: channelData.stats.videos,
         views: channelData.stats.views,
-        iconUrl: channelData.avatar[0].url
+        iconUrl: channelData.avatar[2].url,
+        url: channelData.canonicalBaseUrl,
       });
     };
 
@@ -79,14 +87,47 @@ const Container: React.FC = () => {
     <div style={containerStyle}>
       {stats ? (
         <>
-          <span><b>Channel:</b> {stats.name}</span>
-          <span><b>Subscribers:</b> {stats.subscribers}</span>
-          <span><b>Joined:</b> {stats.joined}</span>
-          <span><b>Description:</b> {stats.description}</span>
-          <span><b>Country:</b> {stats.country}</span>
-          <span><b>Videos:</b> {stats.videos}</span>
-          <span><b>Views:</b> {stats.views}</span>
-          <img height={64} width={64} src={stats.iconUrl} alt='Avatar' />
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <span style={{ fontSize: '24px' }}>
+                <b>{stats.name} <a style={{ all: 'unset', cursor: 'pointer' }} target='_blank' href={`https://www.youtube.com${stats.url}`}>🔗</a></b>
+              </span>
+              <div style={{ display: 'flex' }}>
+                <span><b>Member since:</b> {stats.joined.replace('Joined ', '')}</span>
+                <span><b>Country:</b> {stats.country}</span>
+              </div>
+            </div>
+            <img
+              style={{ borderRadius: '12px' }}
+              height={80} 
+              width={80} 
+              src={stats.iconUrl} 
+              alt='Avatar' 
+            />
+          </div>
+
+          <br />
+
+          <div style={wrapperStyle}>
+            <ProfileIcon />
+            <span><b>Subs:</b> {stats.subscribers}</span>
+          </div>
+          <div style={wrapperStyle}>
+            <VideoIcon />
+            <span><b>Videos:</b> {stats.videos}</span>
+          </div>
+          <div style={wrapperStyle}>
+            <EyeIcon />
+            <span><b>Views:</b> {stats.views}</span>
+          </div>
+
+          <br />
+
+          <span>
+            <b>Description:</b>
+            <br />
+            {stats.description}
+          </span>
         </>
       ) : (
         <span>Loading...</span>
